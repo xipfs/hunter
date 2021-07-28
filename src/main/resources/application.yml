@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  #CONFIG
+thread:
+  pauseTimeInMinutes: 1
+
+  # Candlesticks time frame
+  # 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+tick:
+  timeFrame: 1h
+
+  # Trading
+trading:
+  doTrades: true
+  stopLossPercentage: 10
+  tradeSizeBTC: 0.002
+  maxSimultaneousTrades: 5
+  doTrailingStop: false
+  strategy: MACD
+
+bot:
+  websocketUrl: ws://127.0.0.1:6700
+  whiteListGroup: 1129451242
+
+wechatBot:
+  url: ws://127.0.0.1:9999
+wechatBotServer:
+  url: ws://127.0.0.1:9999
