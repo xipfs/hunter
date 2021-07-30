@@ -52,7 +52,7 @@ public class StaticScheduleTask {
     @Autowired
     private HunterConf conf;
 
-    @Scheduled(fixedRate = 1000 * 60 * 60 *4)
+    @Scheduled(cron="0 0 8,12,16,20,0,4 * * ?")
     private void findLuckyCoins() {
         String[] groupIds = conf.getWhiteListGroup().split("#");
         StringBuilder sb = new StringBuilder();
