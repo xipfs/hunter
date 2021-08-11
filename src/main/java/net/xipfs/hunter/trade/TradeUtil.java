@@ -105,8 +105,48 @@ public class TradeUtil {
         }else{
             sb.append("当前没有买卖信号！\\n");
         }
+
+        //add sar
+        sb.append(sarTrade(symbol, candlesticks));
         return sb.toString();
     }
+
+    private static String sarTrade(String symbol, List<Candlestick> candlesticks) {
+        BarSeries     barSeries     = BinanceTa4jUtil.convertToBarSeries(candlesticks, symbol, CandlestickInterval.DAILY.getIntervalId());
+        Strategy      strategy      = BinanceTa4jUtil.buildSarStrategy(barSeries);
+        int           barSize       = barSeries.getBarCount();
+        int           index         = barSize - 1;
+        Bar           latestBar     = barSeries.getBar(index);
+        ZonedDateTime beginTime     = latestBar.getBeginTime();
+        String        timeStr       = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(beginTime);
+        StringBuilder sb            = new StringBuilder();
+        String        preSpace      = "  ";
+        String        lineSplitter  = "\\n";
+        TradingRecord tradingRecord = new BaseTradingRecord();
+        if (strategy.shouldEnter(index)) {
+            if (tradingRecord.enter(index, latestBar.getClosePrice(), DecimalNum.valueOf(10))) {
+                Trade entry = tradingRecord.getLastEntry();
+                sb.append("SAR BETA:").append(lineSplitter)
+                        .append(preSpace).append("时间: ").append(timeStr).append(lineSplitter)
+                        .append(preSpace).append("买入信号").append(lineSplitter)
+                        .append(preSpace).append("当前价格:").append(entry.getNetPrice().doubleValue()).append(lineSplitter);
+            }
+        } else if (strategy.shouldExit(index)) {
+            if (tradingRecord.exit(index, latestBar.getClosePrice(), DecimalNum.valueOf(10))) {
+                Trade exit = tradingRecord.getLastEntry();
+                sb.append("SAR BETA:").append(lineSplitter)
+                        .append(preSpace).append("时间: ").append(timeStr).append(lineSplitter)
+                        .append(preSpace).append("卖出信号").append(lineSplitter)
+                        .append(preSpace).append("当前价格:").append(exit.getNetPrice().doubleValue()).append(lineSplitter);
+            }
+        }
+        if (sb.toString().length() < 1) {
+            return "SAR当前没有买卖信号！" + lineSplitter;
+        }
+        return sb.toString();
+    }
+
+
     public static void main(String[] args) throws Exception {
         System.out.println(emaStragy("dodo",30));
     }
