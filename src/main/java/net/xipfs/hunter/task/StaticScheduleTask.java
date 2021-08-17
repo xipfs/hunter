@@ -26,8 +26,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.ta4j.core.*;
 import org.ta4j.core.num.DecimalNum;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -53,11 +55,10 @@ public class StaticScheduleTask {
     private HunterConf conf;
 
     @Scheduled(cron="0 0 8,12,16,20,0,4 * * ?")
-    private void findLuckyCoins() {
+    private void findLuckyCoins() throws UnsupportedEncodingException {
         String[] groupIds = conf.getWhiteListGroup().split("#");
         StringBuilder sb = new StringBuilder();
-        sb.append("\"");
-        sb.append("****ALL MARKET GOOD COINS****\\n");
+        sb.append("****ALL MARKET GOOD COINS****\n");
         try {
             BinanceUtil.init("LXyty1nDerKp0x9QRMXcW9YCsCbgv0h9HGxNb8C5Ysj7ov6rrSoBSGmjNrOs67Xo", "gZeHmJiRlsbZ8dMgkRIHxkgSGfQLpQOf0vQFRwmsLJ4YOlrqlK6Zrky7SnakvCvk");
             List<String> symbols=BinanceUtil.getBitcoinSymbols();
@@ -74,29 +75,32 @@ public class StaticScheduleTask {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sb.append("\"");
+        /**
         String res = HttpUtil.builder()
                 .setContentType("application/json; charset=utf-8")
                 .ajaxJson("{\"group_id\": 1129451242,\"message\": " + sb.toString() + "}")
-                .doPost("http://127.0.0.1:5700//send_group_msg")
+                .doPost("http://127.0.0.1:5700/send_group_msg")
                 .toJson();
-        System.out.println(res);
+         */
+        String res= HttpUtil.builder().doGet("https://api.telegram.org/bot1994535524:AAFK97fFu0cr_lZsGo0oS5nzyRJS0C2T_Qg/sendMessage?chat_id=@gototrading&text="+ URLEncoder.encode(sb.toString(), "UTF-8")).toJson();
+
     }
     private void monitor() throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("\"");
         String monitorStr = CoinMonitorApiClient.monitor();
         if(StringUtils.isEmpty(monitorStr)){
             return;
         }else{
             sb.append(monitorStr);
         }
-        sb.append("\"");
+        /**
         String res = HttpUtil.builder()
                 .setContentType("application/json; charset=utf-8")
                 .ajaxJson("{\"group_id\": 1129451242,\"message\": " + sb.toString() + "}")
                 .doPost("http://127.0.0.1:5700//send_group_msg")
-                .toJson();
+                .toJson();*/
+        String res= HttpUtil.builder().doGet("https://api.telegram.org/bot1994535524:AAFK97fFu0cr_lZsGo0oS5nzyRJS0C2T_Qg/sendMessage?chat_id=@gototrading&text="+ URLEncoder.encode(sb.toString(), "UTF-8")).toJson();
+
     }
 
     @Scheduled(fixedRate = 1000 * 60 * 120)
@@ -117,19 +121,18 @@ public class StaticScheduleTask {
         String preWeekStr = sdf.format(preWeek);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\"");
-        sb.append("*********Bitfinex Market*********\\n");
+        sb.append("*********Bitfinex Market*********\n");
         String shortVolumeStr = BitfinexApiClient.shortVolume();
         JSONArray array = JSONArray.parseArray(shortVolumeStr);
         if(array.size()>0){
             BigDecimal shortVolume = (BigDecimal)array.get(1);
             shortVolumeMap.put(dateStr,shortVolume);
-            sb.append("当前空头借币数量: "+df.format(shortVolume)+"\\n");
+            sb.append("当前空头借币数量: "+df.format(shortVolume)+"\n");
             if(shortVolumeMap.get("preDateStr")!=null){
-                sb.append("1d : ").append(df.format(shortVolumeMap.get("preDateStr").subtract(shortVolume))).append("\\n");
+                sb.append("1d : ").append(df.format(shortVolumeMap.get("preDateStr").subtract(shortVolume))).append("\n");
             }
             if(shortVolumeMap.get("preWeekStr")!=null){
-                sb.append("7d : ").append(df.format(shortVolumeMap.get("preWeekStr").subtract(shortVolume))).append("\\n");
+                sb.append("7d : ").append(df.format(shortVolumeMap.get("preWeekStr").subtract(shortVolume))).append("\n");
             }
 
         }
@@ -138,24 +141,25 @@ public class StaticScheduleTask {
         if(array2.size()>0){
             BigDecimal longVolume = (BigDecimal)array2.get(1);
             longVolumeMap.put(dateStr,longVolume);
-            sb.append("当前多头持币数量: "+df.format(longVolume)+"\\n");
+            sb.append("当前多头持币数量: "+df.format(longVolume)+"\n");
             if(longVolumeMap.get("preDateStr")!=null){
-                sb.append("1d : ").append(df.format(longVolumeMap.get("preDateStr").subtract(longVolume))).append("\\n");
+                sb.append("1d : ").append(df.format(longVolumeMap.get("preDateStr").subtract(longVolume))).append("\n");
             }
             if(longVolumeMap.get("preWeekStr")!=null){
-                sb.append("7d : ").append(df.format(longVolumeMap.get("preWeekStr").subtract(longVolume))).append("\\n");
+                sb.append("7d : ").append(df.format(longVolumeMap.get("preWeekStr").subtract(longVolume))).append("\n");
             }
         }
         CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
         Double btcd = client.getGlobal().getData().getMarketCapPercentage().get("btc");
-        sb.append("btc.d : ").append(df2.format(btcd)).append("%\\n");
-        sb.append("\"");
+        sb.append("btc.d : ").append(df2.format(btcd)).append("%\n");
+        /**
         String res = HttpUtil.builder()
                 .setContentType("application/json; charset=utf-8")
                 .ajaxJson("{\"group_id\": 1129451242,\"message\": " + sb.toString() + "}")
                 .doPost("http://127.0.0.1:5700//send_group_msg")
-                .toJson();
-        System.out.println(res);
+                .toJson();*/
+        String res= HttpUtil.builder().doGet("https://api.telegram.org/bot1994535524:AAFK97fFu0cr_lZsGo0oS5nzyRJS0C2T_Qg/sendMessage?chat_id=@gototrading&text="+ URLEncoder.encode(sb.toString(), "UTF-8")).toJson();
+
     }
     private static String findBestCoin(String symbol){
         DecimalFormat df = new DecimalFormat("######0.00");
@@ -193,7 +197,7 @@ public class StaticScheduleTask {
                                 append(entry.getNetPrice().doubleValue()).
                                 append(" 时间: ").
                                 append(timeStr).
-                                append(")\\n");
+                                append(")\n");
                         stack.push(sb1.toString());
                     }
 
@@ -214,7 +218,7 @@ public class StaticScheduleTask {
                             append(exit.getNetPrice().doubleValue()).
                             append(" 时间: ").
                             append(timeStr).
-                            append(")\\n");
+                            append(")\n");
                     if(timeStr.equals(today)) {
                         stack.push(sb1.toString());
                     }
@@ -229,8 +233,8 @@ public class StaticScheduleTask {
 
     public static void main(String[] args) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("*******Scan Market********\\n");
-        sb.append("*******Good Coins*********\\n");
+        sb.append("*******Scan Market********\n");
+        sb.append("*******Good Coins*********\n");
         try {
             BinanceUtil.init("LXyty1nDerKp0x9QRMXcW9YCsCbgv0h9HGxNb8C5Ysj7ov6rrSoBSGmjNrOs67Xo", "gZeHmJiRlsbZ8dMgkRIHxkgSGfQLpQOf0vQFRwmsLJ4YOlrqlK6Zrky7SnakvCvk");
             List<String> symbols=BinanceUtil.getBitcoinSymbols();

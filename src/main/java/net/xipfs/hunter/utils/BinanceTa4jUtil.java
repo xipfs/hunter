@@ -75,6 +75,8 @@ public class BinanceTa4jUtil {
     public static Strategy buildStrategy(BarSeries series, String strategyCode) {
         if (EMA_STRATEGY.equals(strategyCode)) {
             return buildEmaStrategy(series);
+        }else if(SAR_STRATEGY.equals(strategyCode)){
+            return buildSarStrategy(series);
         }
         return null;
     }
@@ -93,6 +95,7 @@ public class BinanceTa4jUtil {
     }
 
     public static Strategy buildSarStrategy(BarSeries series) {
+        //ParabolicSarIndicator sarIndicator = new ParabolicSarIndicator(series);
         ParabolicSarIndicator sarIndicator = new ParabolicSarIndicator(series);
         SarRule               entryRule    = new SarRule(sarIndicator, true);
         SarRule               exitRule     = new SarRule(sarIndicator, false);
