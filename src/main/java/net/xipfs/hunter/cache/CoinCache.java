@@ -34,6 +34,7 @@ public class CoinCache {
         coinsMap.put("GTC","gitcoin");
         coinsMap.put("MASK","mask-network");
         coinsMap.put("UNI","uniswap");
+        coinsMap.put("EPS","ellipsis");
     }
 
     public static void main(String[] args){

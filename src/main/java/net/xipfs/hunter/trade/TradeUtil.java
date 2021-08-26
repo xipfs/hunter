@@ -31,7 +31,7 @@ public class TradeUtil {
         DecimalFormat df2 = new DecimalFormat(",###");
         BinanceUtil.init("LXyty1nDerKp0x9QRMXcW9YCsCbgv0h9HGxNb8C5Ysj7ov6rrSoBSGmjNrOs67Xo", "gZeHmJiRlsbZ8dMgkRIHxkgSGfQLpQOf0vQFRwmsLJ4YOlrqlK6Zrky7SnakvCvk");
         StringBuilder sb = new StringBuilder();
-        sb.append("**********量化评估**********\\n");
+        sb.append("**********量化评估**********\n");
         Stack<String> stack = new Stack<>();
         symbol = symbol+"USDT";
         List<Candlestick> candlesticks = BinanceUtil.getCandlestickBars(symbol.toUpperCase(), CandlestickInterval.DAILY);
@@ -73,7 +73,7 @@ public class TradeUtil {
                             append(nf.format(earnPrice)).
                             append(" 涨幅: ").
                             append(df.format(drop)).append("%").
-                            append(")\\n");
+                            append(")\n");
                     stack.push(sb1.toString());
                 }
             } else if (strategy.shouldExit(endIndex)) {
@@ -95,7 +95,7 @@ public class TradeUtil {
                             append(nf.format(earnPrice)).
                             append(" 跌幅: ").
                             append(df.format(drop)).append("%").
-                            append(")\\n");
+                            append(")\n");
                     stack.push(sb1.toString());
                 }
             }
@@ -103,7 +103,7 @@ public class TradeUtil {
         if(stack.size()>0){
             sb.append(stack.pop());
         }else{
-            sb.append("当前没有买卖信号！\\n");
+            sb.append("当前没有买卖信号！\n");
         }
 
         //add sar
@@ -121,12 +121,12 @@ public class TradeUtil {
         String        timeStr       = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(beginTime);
         StringBuilder sb            = new StringBuilder();
         String        preSpace      = "  ";
-        String        lineSplitter  = "\\n";
+        String        lineSplitter  = "\n";
         TradingRecord tradingRecord = new BaseTradingRecord();
         if (strategy.shouldEnter(index)) {
             if (tradingRecord.enter(index, latestBar.getClosePrice(), DecimalNum.valueOf(10))) {
                 Trade entry = tradingRecord.getLastEntry();
-                sb.append("SAR BETA:").append(lineSplitter)
+                sb.append("SAR BETA: ")
                         .append(preSpace).append("时间: ").append(timeStr).append(lineSplitter)
                         .append(preSpace).append("买入信号").append(lineSplitter)
                         .append(preSpace).append("当前价格:").append(entry.getNetPrice().doubleValue()).append(lineSplitter);
@@ -134,14 +134,14 @@ public class TradeUtil {
         } else if (strategy.shouldExit(index)) {
             if (tradingRecord.exit(index, latestBar.getClosePrice(), DecimalNum.valueOf(10))) {
                 Trade exit = tradingRecord.getLastEntry();
-                sb.append("SAR BETA:").append(lineSplitter)
+                sb.append("SAR BETA: ")
                         .append(preSpace).append("时间: ").append(timeStr).append(lineSplitter)
                         .append(preSpace).append("卖出信号").append(lineSplitter)
                         .append(preSpace).append("当前价格:").append(exit.getNetPrice().doubleValue()).append(lineSplitter);
             }
         }
         if (sb.toString().length() < 1) {
-            return "SAR当前没有买卖信号！" + lineSplitter;
+            return "SAR 当前没有买卖信号！" + lineSplitter;
         }
         return sb.toString();
     }

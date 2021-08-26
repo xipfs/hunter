@@ -44,28 +44,28 @@ public class FeiXiaoHaoApiClient {
         MarketData marketData = coinFullData.getMarketData();
         StringBuilder sb = new StringBuilder();
         try {
-                sb.append("************").append(coin).append("************\\n");
+                sb.append("************").append(coin).append("************\n");
                 Double price = marketData.getCurrentPrice().get("usd");
                 Double high  = marketData.getAth().get("usd");
                 BigDecimal drop = BigDecimal.valueOf(price).divide(BigDecimal.valueOf(high),BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.valueOf(1)).multiply(BigDecimal.valueOf(100));
                 sb.append("当前价格: ").append(nf.format(price));
-                sb.append(" 历史最高价: ").append(nf.format(high)).append("\\n");
-                sb.append("相对历史最高跌幅: ").append(df.format(drop)).append("%\\n");
+                sb.append(" 历史最高价: ").append(nf.format(high)).append("\n");
+                sb.append("相对历史最高跌幅: ").append(df.format(drop)).append("%\n");
                 try {
                     sb.append("市值: ").append(nf.format(marketData.getMarketCap().get("usd")));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                sb.append(" 排名: ").append(coinFullData.getMarketCapRank()).append("\\n");
+                sb.append(" 排名: ").append(coinFullData.getMarketCapRank()).append("\n");
                 sb.append("总量: ").append(df2.format(marketData.getMaxSupply()));
                 try {
-                    sb.append(" 流通量: ").append(df2.format(marketData.getCirculatingSupply())).append("\\n");
+                    sb.append(" 流通量: ").append(df2.format(marketData.getCirculatingSupply())).append("\n");
                 } catch (Exception e){
                     e.printStackTrace();
                 }
 
-                sb.append("24h: ").append(df.format(marketData.getPriceChangePercentage24h())).append("%\\n");
-                sb.append("7d: ").append(df.format(marketData.getPriceChangePercentage7d())).append("%\\n");
+                sb.append("24h: ").append(df.format(marketData.getPriceChangePercentage24h())).append("%\n");
+                sb.append("7d: ").append(df.format(marketData.getPriceChangePercentage7d())).append("%\n");
                 try {
                     sb.append(TradeUtil.emaStragy(coin, price));
                 }catch (Exception e){
@@ -98,7 +98,7 @@ public class FeiXiaoHaoApiClient {
                 for(int j =0 ;j<start_level;j++){
                     sb.append("⭐");
                 }
-                sb.append("\\n");
+                sb.append("\n");
             }
             return sb.toString();
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class FeiXiaoHaoApiClient {
             JSONObject object = JSONObject.parseObject(result);
             JSONObject detail = object.getJSONObject("detail");
             sb.append("牛币: ").append(detail.get("best")).append(" ").append(df.format(detail.get("best_percent"))).append("% ");
-            sb.append("傻币: ").append(detail.get("worst")).append(" ").append(df.format(detail.get("worst_percent"))).append("%\\n");
+            sb.append("傻币: ").append(detail.get("worst")).append(" ").append(df.format(detail.get("worst_percent"))).append("%\n");
             JSONArray array = object.getJSONArray("data");
             for(int i= 0 ; i<array.size(); i++){
                 if(i == 15){
@@ -129,7 +129,7 @@ public class FeiXiaoHaoApiClient {
                         append(" ").
                         append(df.format(jsonObject.get("change_percent"))).append("%) ");
                 if((i+1)%3 == 0){
-                    sb.append("\\n");
+                    sb.append("\n");
                 }
             }
             return sb.toString();

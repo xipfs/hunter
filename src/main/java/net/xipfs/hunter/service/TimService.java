@@ -107,7 +107,7 @@ public class TimService {
 
         }
     }
-    private static String topic(String topic){
+    public static String topic(String topic){
         boolean flag = false;
         StringBuilder sb  = new StringBuilder();
         if(topic.toUpperCase().equals("HOT")){
@@ -144,7 +144,7 @@ public class TimService {
             return null;
         }
     }
-    private static String coin(String coin) throws Exception {
+    public static String coin(String coin) throws Exception {
         StringBuilder sb = new StringBuilder();
         if(CoinCache.coinsMap.containsKey(coin)){
             String newCoin = CoinCache.coinsMap.get(coin);
@@ -153,7 +153,7 @@ public class TimService {
         }
         return sb.toString();
     }
-    private static String cmds(String msg) {
+    public static String cmds(String msg) {
         StringBuilder sb = new StringBuilder();
         if(msg.contains("dog")){
             try {
@@ -179,6 +179,6 @@ public class TimService {
     }
     public static void main(String[] args) throws Exception {
         CoinCache.initCoins();
-        System.out.println(coin("SRM"));
+        System.out.println(coin("MIR"));
     }
 }
